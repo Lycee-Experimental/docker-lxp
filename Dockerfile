@@ -12,19 +12,15 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add git fontconfig postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev libffi-dev pango openjpeg-dev g++
-
-# copy project
-COPY entrypoint.sh /usr/src/entrypoint.sh
-COPY ./app/ .
-RUN chmod 777 /usr/src/entrypoint.sh
-# Obtention du submodule django-lxp
-RUN git submodule update --init --recursive
+    && apk add fontconfig postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev libffi-dev pango openjpeg-dev g++
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./app/requirements.txt .
 RUN pip install -r requirements.txt
-
+# copy project
+COPY entrypoint.sh /usr/src/entrypoint.sh
+COPY ./app/ .
+RUN chmod 777 /usr/src/entrypoint.sh
 
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations and running the Django development server
 ENTRYPOINT ["/usr/src/entrypoint.sh"]
