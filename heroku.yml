@@ -1,5 +1,5 @@
 build:
   docker:
-    web: app/Dockerfile
+    web: Dockerfile
 run:
   web: python manage.py migrate
