@@ -14,4 +14,4 @@ jobs:
       - name: Build the stack
         run: docker-compose up -d
       - name: Test
-        run: docker run web python manage.py migrate
+        run: docker run docker-lxp_web python manage.py migrate
