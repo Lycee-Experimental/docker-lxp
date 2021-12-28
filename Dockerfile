@@ -13,7 +13,7 @@ ENV PYTHONUNBUFFERED 1
 # install psycopg2 dependencies
 RUN apk update \
     && apk add fontconfig postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev libffi-dev pango openjpeg-dev g++
-
+RUN git submodule update --init --recursive
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./app/requirements.txt .
