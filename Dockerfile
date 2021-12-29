@@ -20,7 +20,7 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY app/ .
-COPY entrypoint.sh .
+COPY entrypoint.sh /usr/src/entrypoint.sh
 
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations and running the Django development server
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/entrypoint.sh"]
