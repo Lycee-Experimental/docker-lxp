@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build the stack
         run: docker-compose up -d
       - name: Test
