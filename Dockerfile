@@ -14,10 +14,12 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update \
     && apk add fontconfig postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev libffi-dev pango openjpeg-dev g++
 # install dependencies
-COPY app .
 COPY app/requirements.txt .
 RUN pip install --upgrade pip
 # copy project
 RUN pip install -r requirements.txt
+
+COPY app/ .
+
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations and running the Django development server
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
