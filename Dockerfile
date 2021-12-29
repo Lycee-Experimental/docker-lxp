@@ -24,3 +24,4 @@ RUN chmod 777 /usr/src/entrypoint.sh
 RUN pip install -r requirements.txt
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations and running the Django development server
 ENTRYPOINT ["/usr/src/entrypoint.sh"]
+CMD gunicorn djangoLxp.wsgi:application --bind 0.0.0.0:8000
