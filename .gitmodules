@@ -1,3 +1,6 @@
 [submodule "app"]
 	path = app
 	url = https://github.com/davy39/django-lxp
+[submodule "django-lxp"]
+	path = django-lxp
+	url = https://github.com/lycee-experimental/django-lxp
