@@ -1,26 +1,55 @@
-# pull official alpine image (légère)
-FROM python:3.9.6-alpine
+# ---------------------------------------------------------------------------------------------------------------------#
+# BASE IMAGE - BUILDERS
+# ---------------------------------------------------------------------------------------------------------------------#
+FROM python:3.9.10-slim as base-image
+# ---------------------------------------------------------------------------------------------------------------------#
+# BUILD IMAGE
+# ---------------------------------------------------------------------------------------------------------------------#
+FROM base-image as build-image
+ENV PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  PYTHONHASHSEED=random \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  POETRY_NO_INTERACTION=1 \
+  POETRY_VIRTUALENVS_CREATE=false \
+  PATH="$PATH:/runtime/bin" \
+  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.9/site-packages" \
+  # Versions:
+  POETRY_VERSION=1.1.13
 
-# set work directory
-WORKDIR /usr/src/app
+# System deps:
+#RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
+RUN apt-get update \
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev
+#    && curl -sSL https://install.python-poetry.org | python - -y
 
-# set environment variables
-# Prevents Python from writing pyc files to disc (equivalent to python -B option)
-ENV PYTHONDONTWRITEBYTECODE 1
-# Prevents Python from buffering stdout and stderr (equivalent to python -u option)
-ENV PYTHONUNBUFFERED 1
+RUN pip install "poetry==$POETRY_VERSION"
+WORKDIR /django-lxp
+COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
-# install psycopg2 dependencies
-RUN apk update \
-    && apk add fontconfig postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev libffi-dev pango openjpeg-dev g++
-# install dependencies
-COPY app/requirements.txt .
-RUN pip install --upgrade pip
-# copy project
-RUN pip install -r requirements.txt
+# Generate requirements and install *all* dependencies.
+RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
+RUN pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
-COPY app/ .
-COPY entrypoint.sh /usr/src/entrypoint.sh
+COPY . /django-lxp
+# I dont want poetry to do some naughty stuff
+# I'll make sure to replicate the exact environment by copying deps file and lock
+#COPY django-lxp/ .
 
-# run entrypoint.sh to verify that Postgres is healthy before applying the migrations and running the Django development server
-ENTRYPOINT ["/usr/src/entrypoint.sh"]
+# ---------------------------------------------------------------------------------------------------------------------#
+# PRODUCTION IMAGE
+# ---------------------------------------------------------------------------------------------------------------------#
+FROM base-image as production
+RUN apt-get update \
+    && apt install -y gdal-bin libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 netcat
+COPY --from=build-image /runtime /usr/local
+COPY /django-lxp /django-lxp
+COPY /entrypoint.sh .
+WORKDIR /django-lxp
+#RUN python manage.py migrate
+# run entrypoint.sh to verify that Postgres is healthy before applying the migrations
+# and running the Django server
+#ENTRYPOINT ['/django-lxp/entrypoint.sh']
+ENTRYPOINT ["sh", "/entrypoint.sh"]
