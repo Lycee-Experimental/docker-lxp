@@ -15,8 +15,8 @@ jobs:
           submodules: recursive
       - name: Build the stack
         run: docker-compose up -d
-      - name: Test
-        run: docker run docker-lxp_web python manage.py migrate
+#      - name: Test
+#        run: docker run docker-lxp_web python manage.py migrate
       - name: Login to Heroku Container registry
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
