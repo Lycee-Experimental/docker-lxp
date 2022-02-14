@@ -1,10 +1,10 @@
-name: Docker Compse CI
+name: Docker Compse Heroku CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ none ]
   pull_request:
-    branches: [ main ]
+    branches: [ none ]
 
 jobs:
   test:
