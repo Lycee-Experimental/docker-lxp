@@ -28,3 +28,18 @@ jobs:
         with:
           push: true
           tags: davy39/django-lxp:latest
+      - 
+        name: Deploy to Docker Host
+        uses: wshihadeh/docker-deployment-action@v1
+        with:
+            remote_docker_host: ${{ secrets.DOCKER_SSH_USER }}@${{ DOCKER_SSH_IP }}
+            ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+            ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+            deployment_mode: docker-compose
+            copy_stack_file: true
+            deploy_path: /var/lib/docker-deploy/
+            stack_file_name: docker-compose-prod.yml
+            keep_files: 5
+            args: up -d
+            docker_prune: 'false'
+            pull_images_first: 'true'
