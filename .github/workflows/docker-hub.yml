@@ -33,7 +33,7 @@ jobs:
         uses: ironhalik/docker-over-ssh-action@v1
         with:
           user: ${{ secrets.DOCKER_SSH_USER }}
-          host: ${{ DOCKER_SSH_IP }}
+          host: ${{ secrets.DOCKER_SSH_IP }}
           key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           script: |
             cd docker-lxp 
