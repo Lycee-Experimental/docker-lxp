@@ -38,7 +38,6 @@ jobs:
             deployment_mode: docker-compose
             copy_stack_file: true
             deploy_path: /var/lib/docker-deploy/docker-lxp
-            pre_deployment_command_args: 'git pull --recurse-submodules'
             stack_file_name: docker-compose-prod.yml
             keep_files: 5
             args: up -d
