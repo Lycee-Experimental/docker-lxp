@@ -32,8 +32,8 @@ jobs:
         name: Remote git pull
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.DOCKER_SSH_IP }}
+          username: ${{ secrets.DOCKER_SSH_USER }}
           key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           script: |
             cd docker-lxp
