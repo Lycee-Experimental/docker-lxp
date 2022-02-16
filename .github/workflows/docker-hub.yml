@@ -1,10 +1,10 @@
-name: ci
+name: Docker
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'main'
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -13,6 +13,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+          token: ${{ secrets.CI_TOKEN }}
+          # Update submodule
+      - name: Git Sumbodule Update
+        run: |
+          git pull --recurse-submodules
+          git submodule update --remote --recursive
+      - name: Commit Submodule Update
+        run: |
+          git config --global user.name 'Git bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Auto updated submodule && git push || echo "No changes to commit"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -22,15 +34,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set Swap Space
-        uses: pierotofy/set-swap-space@v1.0
-        with:
-          swap-size-gb: 10
-      - run: |
-          # Workaround for https://github.com/rust-lang/cargo/issues/8719
-          sudo mkdir -p /var/lib/docker
-          sudo mount -t tmpfs -o size=10G none /var/lib/docker
-          sudo systemctl restart docker
       -
         name: Build and push
         uses: docker/build-push-action@v2
