@@ -14,7 +14,7 @@ ENV PYTHONFAULTHANDLER=1 \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_CREATE=false \
-  PATH="$PATH:/runtime/bin" \
+  PATH="$PATH:/runtime/bin:$HOME/.poetry/bin" \
   PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages"
 # System deps:
 RUN apt-get update \
