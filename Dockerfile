@@ -14,25 +14,22 @@ ENV PYTHONFAULTHANDLER=1 \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_CREATE=false \
-  CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
-  CARGO_NET_GIT_FETCH_WITH_CLI=true \
   PATH="$PATH:/runtime/bin" \
   PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages" \
-  # Versions:
-  POETRY_VERSION=1.1.13
-
 # System deps:
 #RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev build-essential libssl-dev libffi-dev cargo rustc
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev 
+    #build-essential libssl-dev libffi-dev cargo rustc
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
 # Generate requirements and install *all* dependencies.
-RUN pip install --upgrade pip
-RUN pip install --prefix=/runtime --force-reinstall cryptography==3.3.2
-RUN pip install "poetry==$POETRY_VERSION"
+#RUN pip install --upgrade pip
+#RUN pip install --prefix=/runtime --force-reinstall cryptography==3.3.2
+#RUN pip install "poetry==$POETRY_VERSION"
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 RUN pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
