@@ -26,7 +26,7 @@ RUN apt-get update \
 #    && curl -sSL https://install.python-poetry.org | python - -y
 ARG TARGETPLATFORM
 RUN DEBARCH="$TARGETPLATFORM"; \
-    if [ "$DEBARCH" = "armhf" ]; then apt install libffi6; fi; 
+    if [ "$DEBARCH" = "linux/arm/v7" ]; then apt install libffi6; fi; 
 
 RUN pip install "poetry==$POETRY_VERSION"
 WORKDIR /django-lxp
