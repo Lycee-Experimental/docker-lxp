@@ -14,6 +14,7 @@ ENV PYTHONFAULTHANDLER=1 \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_CREATE=false \
+  CARGO_NET_GIT_FETCH_WITH_CLI=true \
   PATH="$PATH:/runtime/bin" \
   PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages" \
   # Versions:
