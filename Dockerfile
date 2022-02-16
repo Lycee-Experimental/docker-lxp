@@ -26,7 +26,7 @@ RUN apt-get update \
 #    libffi est demandé pour la contruction en armhf...
 ARG TARGETPLATFORM
 RUN DEBARCH="$TARGETPLATFORM"; \
-    if [ "$DEBARCH" = "linux/arm/v7" ]; then apt install libffi8; fi; 
+    if [ "$DEBARCH" = "linux/arm/v7" ]; then apt install libffi7; fi; 
 
 RUN pip install "poetry==$POETRY_VERSION"
 WORKDIR /django-lxp
