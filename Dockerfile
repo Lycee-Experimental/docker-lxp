@@ -23,7 +23,7 @@ ENV PYTHONFAULTHANDLER=1 \
 # System deps:
 #RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev build-essential libssl-dev libffi-dev cargo
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev build-essential libssl-dev libffi-dev cargo rustc
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
