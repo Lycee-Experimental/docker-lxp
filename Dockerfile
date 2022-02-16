@@ -25,13 +25,13 @@ ENV PYTHONFAULTHANDLER=1 \
 RUN apt-get update \
     && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev build-essential libssl-dev libffi-dev python3.8-dev cargo
 
-RUN pip install "poetry==$POETRY_VERSION"
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
 # Generate requirements and install *all* dependencies.
-RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 RUN python3.8 -m pip install --upgrade pip
+RUN python3.8 -m pip install "poetry==$POETRY_VERSION"
+RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 RUN python3.8 -m pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
 COPY . /django-lxp
