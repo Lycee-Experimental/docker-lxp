@@ -22,7 +22,7 @@ ENV PYTHONFAULTHANDLER=1 \
 # System deps:
 #RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi
 #    && curl -sSL https://install.python-poetry.org | python - -y
 
 RUN pip install "poetry==$POETRY_VERSION"
