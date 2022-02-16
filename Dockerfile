@@ -23,10 +23,10 @@ ENV PYTHONFAULTHANDLER=1 \
 #RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN apt-get update \
     && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev
-#    && curl -sSL https://install.python-poetry.org | python - -y
+#    libffi est demandé pour la contruction en armhf...
 ARG TARGETPLATFORM
 RUN DEBARCH="$TARGETPLATFORM"; \
-    if [ "$DEBARCH" = "linux/arm/v7" ]; then apt install libffi6; fi; 
+    if [ "$DEBARCH" = "linux/arm/v7" ]; then apt install libffi8; fi; 
 
 RUN pip install "poetry==$POETRY_VERSION"
 WORKDIR /django-lxp
