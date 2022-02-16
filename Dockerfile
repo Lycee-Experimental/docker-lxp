@@ -19,7 +19,7 @@ ENV PYTHONFAULTHANDLER=1 \
   PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages"
 # System deps:
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev 
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++
 #build-essential libssl-dev libffi-dev cargo rustc
 
 WORKDIR /django-lxp
