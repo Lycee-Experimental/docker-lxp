@@ -15,12 +15,11 @@ ENV PYTHONFAULTHANDLER=1 \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_CREATE=false \
   PATH="$PATH:/runtime/bin" \
-  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages" \
+  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages"
 # System deps:
-#RUN apt-get update && apt-get install -y build-essential unzip wget python-dev
 RUN apt-get update \
     && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev 
-    #build-essential libssl-dev libffi-dev cargo rustc
+#build-essential libssl-dev libffi-dev cargo rustc
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
