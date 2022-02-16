@@ -31,9 +31,9 @@ COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
 # Generate requirements and install *all* dependencies.
 RUN pip install --upgrade pip
+RUN pip install --prefix=/runtime --force-reinstall cryptography==3.3.2
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
-RUN pip install --prefix=/runtime --force-reinstall cryptography==3.3.2
 RUN pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
 COPY . /django-lxp
