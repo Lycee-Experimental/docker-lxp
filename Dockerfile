@@ -17,26 +17,22 @@ ENV PYTHONFAULTHANDLER=1 \
   POETRY_VIRTUALENVS_CREATE=false \
   PATH="$PATH:/runtime/bin:/opt/poetry/bin" \
   PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages"
-# System deps:
+
+# Install build dependencies
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++
-#build-essential libssl-dev libffi-dev cargo rustc
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++ libfreetype6-dev
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
-# Generate requirements and install *all* dependencies.
-#RUN pip install --upgrade pip
-#RUN pip install --prefix=/runtime --force-reinstall cryptography==3.3.2
-#RUN pip install "poetry==$POETRY_VERSION"
+# Install Poetry.
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+# Generate requirements
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
+# Build python dependencies
 RUN pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
 COPY . /django-lxp
-# I dont want poetry to do some naughty stuff
-# I'll make sure to replicate the exact environment by copying deps file and lock
-#COPY django-lxp/ .
 
 # ---------------------------------------------------------------------------------------------------------------------#
 # PRODUCTION IMAGE
