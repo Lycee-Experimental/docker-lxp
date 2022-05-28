@@ -41,7 +41,7 @@ FROM base-image as production
 RUN apt-get update \
     && apt install -y gdal-bin libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 netcat
 COPY --from=build-image /runtime /usr/local
-COPY /django-lxp /django-lxp
+COPY django-lxp /django-lxp/
 COPY /entrypoint.sh .
 WORKDIR /django-lxp
 #RUN python manage.py migrate
