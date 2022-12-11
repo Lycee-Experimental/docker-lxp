@@ -20,13 +20,13 @@ ENV PYTHONFAULTHANDLER=1 \
 
 # Install build dependencies
 RUN apt-get update \
-    && apt install -y python3.10 curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++ libfreetype6-dev
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++ libfreetype6-dev
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
 # Install Poetry.
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | python3.10 -
 # Generate requirements
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 # Build python dependencies
@@ -39,7 +39,7 @@ COPY . /django-lxp
 # ---------------------------------------------------------------------------------------------------------------------#
 FROM base-image as production
 RUN apt-get update \
-    && apt install -y python3.10 gdal-bin libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 netcat
+    && apt install -y gdal-bin libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 netcat
 COPY --from=build-image /runtime /usr/local
 COPY django-lxp /django-lxp/
 COPY /entrypoint.sh .
