@@ -30,7 +30,7 @@ RUN curl -sSL https://install.python-poetry.org | python3.10 -
 # Generate requirements
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 # Build python dependencies
-RUN pip install --prefix=/runtime --force-reinstall -r requirements.txt
+RUN python3.10 -m pip install --prefix=/runtime --force-reinstall -r requirements.txt
 
 COPY . /django-lxp
 
