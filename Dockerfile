@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------------------------------------------------#
 # BASE IMAGE - BUILDERS
 # ---------------------------------------------------------------------------------------------------------------------#
-FROM python:3.9-slim-bullseye as base-image
+FROM python:3.10-slim-bullseye as base-image
 # ---------------------------------------------------------------------------------------------------------------------#
 # BUILD IMAGE
 # ---------------------------------------------------------------------------------------------------------------------#
@@ -16,7 +16,7 @@ ENV PYTHONFAULTHANDLER=1 \
   POETRY_HOME="/opt/poetry" \
   POETRY_VIRTUALENVS_CREATE=false \
   PATH="$PATH:/runtime/bin:/opt/poetry/bin" \
-  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.8/site-packages"
+  PYTHONPATH="$PYTHONPATH:/runtime/lib/python3.10/site-packages"
 
 # Install build dependencies
 RUN apt-get update \
@@ -26,7 +26,7 @@ WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
 
 # Install Poetry.
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 # Generate requirements
 RUN poetry export --dev --without-hashes --no-interaction --no-ansi -f requirements.txt -o requirements.txt
 # Build python dependencies
