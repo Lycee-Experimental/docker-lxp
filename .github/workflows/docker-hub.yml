@@ -40,14 +40,3 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           push: true
           tags: davy39/django-lxp:latest
-      - name: Remote git pull
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DOCKER_SSH_IP }}
-          username: ${{ secrets.DOCKER_SSH_USER }}
-          key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
-          script: |
-            cd docker-lxp
-            git pull --recurse-submodules
-            docker-compose -f docker-compose-prod.yml pull
-            docker-compose -f docker-compose-prod.yml up -d
