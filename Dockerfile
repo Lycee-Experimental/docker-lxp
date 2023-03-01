@@ -39,11 +39,19 @@ COPY . /django-lxp
 # ---------------------------------------------------------------------------------------------------------------------#
 FROM base-image as production
 RUN apt-get update \
-    && apt install -y gdal-bin libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 netcat
+    && apt install -y gdal-bin libglib2.0-0 netcat chromium-driver
 COPY --from=build-image /runtime /usr/local
-COPY django-lxp /django-lxp/
-COPY /entrypoint.sh .
+COPY ./django-lxp /django-lxp
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN mkdir /django-lxp/staticfiles
 WORKDIR /django-lxp
+# create the app user
+RUN addgroup djangolxp && adduser djangolxp --ingroup djangolxp
+RUN chown -R djangolxp:djangolxp /django-lxp
+# change to the app user
+USER djangolxp
 #RUN python manage.py migrate
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations
 # and running the Django server

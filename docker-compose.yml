@@ -1,13 +1,17 @@
+
 version: '3.8'
 
 services:
   web:
-    #image: base-image_production:latest
     build: .
+    #image:    davy39/django-lxp:latest
+    command: gunicorn djangoLxp.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./django-lxp:/django-lxp
-    ports:
-      - 8000:8000
+      - static_volume:/django-lxp/staticfiles
+    user: 1000:1000
+    expose:
+      - 8000
     env_file:
       - ./.env
     depends_on:
@@ -16,10 +20,16 @@ services:
     image: postgres:14.2-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_USER=hello_django
-      - POSTGRES_PASSWORD=hello_django
-      - POSTGRES_DB=hello_django
+    env_file:
+      - ./.env.db
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/django-lxp/staticfiles
+    depends_on:
+      - web
 volumes:
   postgres_data:
+  static_volume:
