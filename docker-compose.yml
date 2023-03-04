@@ -2,34 +2,49 @@
 version: '3.8'
 
 services:
-  web:
+  djangoweb:
     build: .
     #image:    davy39/django-lxp:latest
     command: gunicorn djangoLxp.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./django-lxp:/django-lxp
-      - static_volume:/django-lxp/staticfiles
-    user: 1000:1000
+      - static_volume:/home/djangolxp/django-lxp/staticfiles
+    #user: 1000:1000
     expose:
       - 8000
     env_file:
       - ./.env
     depends_on:
-    - db
-  db:
-    image: postgres:14.2-alpine
+    - djangodb
+    networks:
+      - traefik_network
+  djangodb:
+    image: postgres:15.2-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.db
-  nginx:
+    networks:
+      - traefik_network
+  djangonginx:
     build: ./nginx
-    ports:
-      - 1337:80
     volumes:
-      - static_volume:/django-lxp/staticfiles
+      - static_volume:/staticfiles
     depends_on:
-      - web
+      - djangoweb
+    # Utilisation sans traefik
+    #ports:
+    #  - 8080:80
+    # Utilisation avec traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.django.loadbalancer.server.port=80"
+    networks:
+      - traefik_network
+
+networks:
+  traefik_network:
+    external: true
 volumes:
   postgres_data:
   static_volume:

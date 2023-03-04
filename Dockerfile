@@ -20,7 +20,7 @@ ENV PYTHONFAULTHANDLER=1 \
 
 # Install build dependencies
 RUN apt-get update \
-    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++ libfreetype6-dev
+    && apt install -y curl git gdal-bin libgdal-dev libpq-dev libmariadb-dev libffi-dev g++
 
 WORKDIR /django-lxp
 COPY /django-lxp/pyproject.toml /django-lxp/poetry.lock /django-lxp/
@@ -41,19 +41,19 @@ FROM base-image as production
 RUN apt-get update \
     && apt install -y gdal-bin libglib2.0-0 netcat chromium-driver
 COPY --from=build-image /runtime /usr/local
-COPY ./django-lxp /django-lxp
-COPY ./entrypoint.sh .
-RUN sed -i 's/\r$//g' /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-RUN mkdir /django-lxp/staticfiles
-WORKDIR /django-lxp
-# create the app user
 RUN addgroup djangolxp && adduser djangolxp --ingroup djangolxp
-RUN chown -R djangolxp:djangolxp /django-lxp
+COPY ./django-lxp /home/djangolxp/django-lxp
+COPY ./entrypoint.sh /home/djangolxp/
+RUN sed -i 's/\r$//g' /home/djangolxp/entrypoint.sh
+RUN chmod +x /home/djangolxp/entrypoint.sh
+RUN chown -R djangolxp:djangolxp /home/djangolxp/django-lxp
+#RUN mkdir /django-lxp/staticfiles
+WORKDIR /home/djangolxp/django-lxp
+# create the app user
 # change to the app user
 USER djangolxp
 #RUN python manage.py migrate
 # run entrypoint.sh to verify that Postgres is healthy before applying the migrations
 # and running the Django server
 #ENTRYPOINT ['/django-lxp/entrypoint.sh']
-ENTRYPOINT ["sh", "/entrypoint.sh"]
+ENTRYPOINT ["sh", "/home/djangolxp/entrypoint.sh"]
