@@ -5,9 +5,9 @@ services:
   djangoweb:
     build: .
     #image:    davy39/django-lxp:latest
-    command: gunicorn djangoLxp.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn djangoLxp.wsgi:application --bind 0.0.0.0:8000 --reload
     volumes:
-      - ./django-lxp:/django-lxp
+      - ./django-lxp:/home/djangolxp/django-lxp
       - static_volume:/home/djangolxp/django-lxp/staticfiles
     #user: 1000:1000
     expose:
